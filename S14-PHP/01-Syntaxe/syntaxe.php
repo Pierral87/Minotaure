@@ -531,7 +531,7 @@
             if ($temperature >= -1 && $temperature <= 1) {
                 $suite = " et il fait $temperature degré<hr>";
             } else {
-                  $suite = " et il fait $temperature degrés<hr>";
+                $suite = " et il fait $temperature degrés<hr>";
             }
             return $debut . $suite;
         }
@@ -607,7 +607,282 @@
         }
 
         echo identite("Pierra", 30, 30); // Si je transmet des types non attendus (malgré la flexibilité du langage) j'aurai un TypeError
-        echo identite(nom: "Lolo", cp:47); // Depuis PHP 8 On peut appeler les arguments par leur nom, ce qui me permet de fournir certains param facultatif sans forcément citer tous les autres avant ! (Si j'ai 10 param facultatif dans ma fonction et que je veux saisir le dernier uniquement, avant j'étais obligé de tous les saisir, maintenant plus besoin !)
+        echo identite(nom: "Lolo", cp: 47); // Depuis PHP 8 On peut appeler les arguments par leur nom, ce qui me permet de fournir certains param facultatif sans forcément citer tous les autres avant ! (Si j'ai 10 param facultatif dans ma fonction et que je veux saisir le dernier uniquement, avant j'étais obligé de tous les saisir, maintenant plus besoin !)
+
+        echo "<h2>10 - Structure itérative : Boucles</h2>";
+
+        // Il existe plusieurs outils de boucle en PHP 
+
+        // Boucle for = on tourne obligatoirement avec un compteur numérique, la syntaxe est prévue pour ça !
+        // Besoin de 3 informations 
+        // Une valeur de départ (compteur)
+        // Une condition d'entrée (basée sur le compteur)
+        // Une incrémentation ou décrémentation (du compteur)
+
+        for ($i = 0; $i < 10; $i++) {
+            echo "$i ";
+        }
+
+        separateur();
+
+        // Boucle while = boucle en fonction d'une condition (pas forcément numérique)
+
+        $i = 0; // valeur de départ
+        while ($i < 10) { // condition d'entrée
+            echo "$i ";
+            $i++; // Incrémentation
+        }
+
+        separateur();
+
+        // Il est possible de sortir d'une boucle avec le mot clé break;
+
+        $i = 0; // valeur de départ
+        while ($i < 100) { // condition d'entrée
+            echo "$i ";
+            if ($i == 20) break;
+            $i++; // Incrémentation
+        }
+
+
+        // Autre syntaxe de boucle avec le "end" plutôt que l'accolade
+
+        $i = 0; // valeur de départ
+        while ($i < 10) : // condition d'entrée
+            echo "$i ";
+            $i++; // Incrémentation
+        endwhile;
+
+        separateur();
+
+        for ($i = 0; $i < 10; $i++) :
+            echo "$i ";
+        endfor;
+
+        separateur();
+
+        /////////////////////////////////////////////////
+
+        // EXERCICES DE BOUCLE 
+
+        // Exercice 1 : Régler cette boucle 
+        for ($i = 0; $i < 10; $i++) {
+            echo $i . ' - ';
+        }
+        // Résultat actuel : 0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 -
+        // Résultat souhaité : 0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9
+        separateur();
+
+        for ($i = 0; $i < 10; $i++) {
+            if ($i < 9)  echo $i . ' - ';
+            else echo $i;
+        }
+        separateur();
+        for ($i = 0; $i < 10; $i++) {
+            echo ($i < 9) ? "$i - " : $i;
+        }
+
+        separateur();
+        // Exercice 2 
+        // Afficher des nombres allant de 1 à 100
+        for ($i = 1; $i <= 100; $i++) :
+            echo "$i ";
+        endfor;
+
+        // Exercice 3 
+        // Afficher des nombres allant de 1 à 100 avec le chiffre 50 en rouge 
+        for ($i = 1; $i <= 100; $i++) :
+            echo ($i == 50) ? "<span style='color:red'>$i </span>" : "$i ";
+        endfor;
+        separateur();
+        // Exercice 4
+        // Afficher des nombres allant de 2000 à 1930
+        for ($i = 2000; $i >= 1930; $i--) :
+            echo "$i ";
+        endfor;
+
+        // Exercice 5
+        // Afficher le titre suivant 10 fois : <h1>Titre à afficher 10 fois</h1>
+        for ($i = 0; $i < 10; $i++) {
+            echo "<h1>Titre à afficher 10 fois</h1>";
+        }
+        separateur();
+        // Exercice 6
+        // Afficher le titre suivant "<h1>Je m'affiche pour la Nème fois</h1>"
+        // Remplacer le N par la valeur du tour de boucle, gérer l'exception du premier tour 1ère fois et non pas 1ème fois
+        for ($i = 1; $i <= 10; $i++) {
+            $n = ($i == 1) ? "ère" : "ème";
+            echo "<h1>Je m'affiche pour la $i $n fois</h1>";
+        }
+
+        echo "<h2>11 - Tableaux de données Array</h2>";
+        // Array est un nouveau type de données 
+        // C'est un type qui nous permet de conserver un ensemble de valeur 
+        // Un array est toujours composé de "deux colonnes"
+        // Une colonne qui représente la clé/l'index d'accès à une valeur
+        // Une autre colonne correspondant à la valeur en question associée à cet index 
+
+        // Déclaration d'un tableau array
+        $tab_jours = array("lundi", "mardi", "mercredi", "jeudi", "vendredi");
+
+        // echo $tab_jours; 
+        // Je ne peux pas faire un echo sur un array, Error : Array to string conversion 
+
+        // Deux instructions me permettent de vérifier le contenu d'un array, print_r et var_dump
+        echo "<pre>";
+        print_r($tab_jours);
+        echo "</pre>";
+        separateur();
+        var_dump($tab_jours);
+        // Array
+        //     (
+        //         [0] => lundi
+        //         [1] => mardi
+        //         [2] => mercredi
+        //         [3] => jeudi
+        //         [4] => vendredi
+        //     )
+
+        // Affichons mardi, comment faire ? 
+        echo $tab_jours[1];
+        // On manipulera toujours les array en piochant dans la var et en indiquant entre crochets l'indice que je souhaite afficher 
+
+        // Quelques fonctions en rapport avec les tableaux array
+        // array_push()
+        // Permet d'ajouter un ou plusieurs éléments en fin de tableau 
+        array_push($tab_jours, "samedi", "dimanche");
+        var_dump($tab_jours);
+
+        // array_unshift pour ajouter des éléments en début de tableau 
+        // is_array pour contrôler qu'une variable est bien de type array 
+        // in_array pour contrôler qu'un élément fait parti d'un tableau array (pour vérifier par exemple des valeurs autorisées (des extensions de fichier pour les images par exemple))
+
+        // Autres façons de déclarer un tableau 
+        $tab_mois = ["janvier", "fevrier", "mars", "avril"];
+        var_dump($tab_mois);
+
+        // Autre façon pour ajouter un élément dans un array
+        $tab_mois[] = "mai";
+        $tab_mois[] = "juin";
+        var_dump($tab_mois);
+
+        $tab_fruits[] = "pomme"; // Cette syntaxe permet également de créer le tableau 
+        $tab_fruits[] = "banane";
+        var_dump($tab_fruits);
+
+        // Pour connaître la taille d'un tableau array : 
+        // count() ou sizeof() 
+        echo "Taille du tableau contenant les mois : " . count($tab_mois) . "<br>";
+        echo "Taille du tableau contenant les mois : " . sizeof($tab_mois) . "<br>";
+
+        // Affichage du array tab_mois entier dans une liste ul li 
+        echo "<ul>";
+        for ($i = 0; $i < count($tab_mois); $i++) {
+            echo "<li>" . $tab_mois[$i] . "</li>";
+        }
+        echo "</ul>";
+
+        // En PHP il est possible d'avoir des indices non pas numériques mais en lettres ! C'est ce qu'on appelle un tableau avec des indices nommés, en fait, un tableau ASSOCIATIF
+        $user = array("pseudo" => "Pierro", "password" => "azerty", "email" => "pierro@lolo.com", "age" => 30);
+
+        var_dump($user);
+
+        // Je peux rajouter des éléments en nommant les indices également
+        $user["ville"] = "Paris";
+        $user["cp"] = 75000;
+        var_dump($user);
+
+        // Sur ce dernier tableau, les index en toutes lettres ne me permettent pas de faire une boucle comme je l'ai fais précédemment avec les indices numériques 
+
+        // Par contre, nous avons un outil adapté à ça, la boucle foreach ! 
+        // La boucle foreach est spécifiques aux array et aux objets et permet de parcourir l'intégralité d'un array 
+
+        // Deux syntaxes possibles 
+        // La première permet de récupérer uniquement les valeurs de chaque indice de l'array 
+
+        separateur();
+
+        foreach ($user as $valeur) { // Ici je nomme la variable $valeur qui me permettra de récupérer la valeur de chaque élément du array
+            echo "- $valeur <br>";
+        }
+
+        separateur();
+        // La deuxième me permet de récupérer aussi le nom des indices ! Pour effectuer des traitements différents d'un indice à l'autre (ignorer un password, mettre une balise <img> pour afficher une image) 
+
+        foreach ($user as $indice => $valeur) { // Ici je nomme deux variables, la première après "as" recevra le nom de l'indice et celle après la double flèche => recevra la valeur rattachée à cet indice pour chaque tour de boucle
+            if ($indice != "password")  echo "- $indice : $valeur <br>";
+        }
+
+        // Il est possible d'avoir un array dans un autre array
+        // C'est un array à deux niveaux (ou plus), on appelle ça un array multidimensionnel 
+
+        $panier = array("numero_produit" => array(1, 2, 3), "prix" => array(10, 15, 30), "quantite" => array(1, 3, 4), "titre_produit" => array("chaussettes", "tshirt", "pantalon"));
+
+        var_dump($panier);
+        //         array (size=4)
+        //   'numero_produit' => 
+        //     array (size=3)
+        //       0 => int 1
+        //       1 => int 2
+        //       2 => int 3
+        //   'prix' => 
+        //     array (size=3)
+        //       0 => int 10
+        //       1 => int 15
+        //       2 => int 30
+        //   'quantite' => 
+        //     array (size=3)
+        //       0 => int 1
+        //       1 => int 3
+        //       2 => int 4
+        //   'titre_produit' => 
+        //     array (size=3)
+        //       0 => string 'chaussettes' (length=11)
+        //       1 => string 'tshirt' (length=6)
+        //       2 => string 'pantalon' (length=8)
+
+        // Pour un manipuler un array à plusieurs niveaux ?
+        // Si je veux afficher chaussettes ? 
+        // Pour ça il me suffit de rentrer dans les indices un à un, à chaque fois avec leur paire de crochets 
+        echo $panier["titre_produit"][0];
+
+        echo "<h2>12 - Inclusion de fichier</h2>";
+        // On créer un fichier séparé exemple.php (je le nomme _exemple.php)
+        // On ajoute un peu de contenu dans ce fichier
+        
+        // On va maintenant s'intéresser à inclure ce fichier sur notre page syntaxe.php 
+
+        // Pour ça, deux instructions : include et require 
+        // Ces deux instructions sont similaires, elles ramènent le contenu entier d'un fichier vers une autre page 
+            // La différence entre les deux, ce sont leurs gestions des erreurs, le include va générer une erreur "warning" le code continue, le require va générer une erreur "fatal_error" le code s'arrête !
+
+        // Egalement ces deux instructions existent en version _once qui permettent de ne pas réinclure le fichier s'il est déjà présent sur cette page 
+
+        // Généralement on nomme ces fichiers de "portions de page" différemment, pour les différencier des fichiers qui contiennent des pages entières (tout comme des fichiers qui contiennent uniquement des Classes en orienté objet), on appelle ça des "partials" et on les nomme généralement en débutant leur nom par un "_" 
+
+        echo "<b>Premier appel avec include : </b><hr>";
+        include "_exemple.php";
+
+        echo "<b>Deuxième appel avec include_once : </b><hr>";
+        include_once "_exemple.php";
+
+        echo "<b>Troisième appel avec require : </b><hr>";
+        require "_exemple.php";
+
+        echo "<b>Quatrième appel avec require_once : </b><hr>";
+        require_once "_exemple.php";
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
