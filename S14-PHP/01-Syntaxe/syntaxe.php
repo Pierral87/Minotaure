@@ -416,9 +416,201 @@
         // Changement du fuseau horaire pour coller à l'heure française
         date_default_timezone_set("Europe/Paris");
 
-        echo "Nous sommes le : " . date("d/m/Y") . " et il est : ". date("H:i:s") . "<br>";
+        echo "Nous sommes le : " . date("d/m/Y") . " et il est : " . date("H:i:s") . "<br>";
 
         echo "Copyright &copy; " . date("Y") . "<hr>";
+
+        // La fonction date accepte un second argument, une date en timestamp!
+        // Le timestamp c'est le nombre de secondes écoulées depuis le premier janvier 1970 (horodatage UNIX)
+        // Difficile à connaître de tête... On va utiliser strtotime pour transformer une date format string en timestamp !
+        echo date("d/m/Y H:i:s", strtotime("22-10-2012")) . "<hr>";
+
+        // Fonctions de manipulation de string 
+
+        // strlen() / iconv_strlen()
+        // Fonction permettant de compter le nombre de caractères dans une chaine 
+
+        echo strlen("bônjôùr"); // ATTENTION strlen compte le nombre d'octets et pas le nombre de caractères, ce serait problématique de l'utiliser pour des vérifications de tailles sur des saisies (pseudo, mot de passe, etc.)
+        echo iconv_strlen("bônjôùr"); // iconv_strlen compte exactement le nombre de caractères, accentués/spéciaux ou pas 
+
+        // strpos()
+        // Indique la position d'un élément dans une chaine 
+        $email = "mail@mail.fr";
+        echo "Position du @ dans la chaine " . strpos($email, "@") . "<br>";
+
+        // substr()
+        // Permet de découper une chaine de caractère 
+        $phrase = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Provident similique atque quae et odio totam aliquid ad ut? Quos eaque quaerat tempora. Odio hic facere sequi earum, quam explicabo assumenda.";
+
+        echo substr($phrase, 0, 25) . '... <a href="">Lire la suite</a><hr>';
+
+        // ucfirst() upperCase first, met la première lettre d'une chaine en maj
+
+        // Les fonctions de test (retourne true si c'est le type en question, sinon false)
+        // is_int, is_array, is_string, is_bool, is_numeric
+
+        // Même si ma fonction est déclarée plus bas, l'appel fonctionne ici ! Les fonctions sont préchargées en priorité, avant le reste de la page
+        separateur();
+
+        echo "<h2>09 - Fonctions utilisateur</h2>";
+
+        // Ce sont des fonctions que l'on développe nous même ! 
+
+        // Fonction permettant d'afficher 3 <hr>
+
+
+        // Déclaration : 
+        function separateur()
+        {
+            echo "<hr><hr><hr>";
+        }
+
+        // Exécution :
+        separateur();
+
+        //  Fonction avec argument (param)
+        // Fonction permettant de dire bonjour à un user
+        function dire_bonjour($pseudo)
+        {
+            return "Bonjour " . $pseudo . ", bienvenue sur notre site<hr>";
+        }
+
+        echo dire_bonjour("Pierra");
+
+        // Fonction permettant de calculer un prix TTC
+        function applique_tva($prix)
+        {
+            return "Le montant TTC pour le prix $prix est de : " . ($prix * 1.2) . "€<hr>"; // tva à 20%
+        }
+
+        echo applique_tva(500);
+
+        // EXERCICE : Refaire une fonction similaire pour le taux de TVA, mais, avec la possibilité de choisir le taux à appliquer 
+        // Après avoir développé cette fonction, rendez le taux facultatif
+        // Si le taux n'est pas défini par l'utilisateur, c'est le taux de 20% de TVA qui s'applique
+
+        function tva_taux($prix, $taux = 20)
+        {
+            if (is_numeric($prix) && is_numeric($taux)) {
+                return "Le montant TTC pour le prix $prix et au taux de $taux% est de : " . $prix * (1 + ($taux / 100)) . "€<hr>";
+            } else return "Vous devez fournir absolument des valeurs numériques !<hr>";
+        }
+
+        echo tva_taux(100, "");
+        echo tva_taux(100);
+
+        // EXERCICE : 
+        // Ci-après, une fonction "meteo"
+        // Régler cette fonction pour gérer "en" et "au" en fonctoin de la saison et le "s" sur les degrés en fonction de si la temmperature est au pluriel ou pas
+
+        function meteo($saison, $temperature)
+        {
+            $debut = "Nous sommes en $saison";
+            $suite = " et il fait $temperature degré(s)<hr>";
+
+            return $debut . $suite;
+        }
+
+        separateur();
+
+        echo meteo("printemps", 20);
+        echo meteo("été", 40);
+        echo meteo("automne", 12);
+        echo meteo("hiver", 1);
+
+        separateur();
+
+        function meteo2($saison, $temperature)
+        {
+            if ($saison == "printemps") {
+                $debut = "Nous sommes au $saison";
+            } else {
+                $debut = "Nous sommes en $saison";
+            }
+
+            if ($temperature >= -1 && $temperature <= 1) {
+                $suite = " et il fait $temperature degré<hr>";
+            } else {
+                  $suite = " et il fait $temperature degrés<hr>";
+            }
+            return $debut . $suite;
+        }
+
+        echo meteo2("printemps", 20);
+        echo meteo2("été", 40);
+        echo meteo2("automne", 12);
+        echo meteo2("hiver", 1);
+
+        separateur();
+
+        function meteo3($saison, $temperature)
+        {
+            $prep = ($saison == "printemps") ? "au" : "en";
+            $s = (abs($temperature) <= 1) ? "" : "s";
+
+            return "Nous sommes $prep $saison et il fait $temperature degré$s <hr>";
+        }
+
+        echo meteo3("printemps", 20);
+        echo meteo3("été", 40);
+        echo meteo3("automne", 12);
+        echo meteo3("hiver", 1);
+
+        // ENVIRONNEMENT / SCOPE 
+        //  Global : le script complet 
+        // Local : à l'intérieur d'une fonction / classe / méthode 
+
+        // L'existence d'une variable dépend de l'environnement où on la déclare 
+        // Une variable déclarée dans un espace local (dans les accolades de la déclaration d'une fonction) n'existe QUE dans cette fonction 
+
+        separateur();
+
+        $animal = "chat"; // Variable déclarée dans l'espace global
+
+
+        echo $animal . "<br>"; // chat
+
+        function foret()
+        {
+            $animal = "chien"; // Variable déclarée dans l'espace local, elle est différente de celle de l'espace global
+            return $animal;
+        }
+
+        echo $animal . "<br>"; // chat
+        foret(); // exécution de la fonction, un string contenant chien est envoyé dans le vide, rien ne se passe
+        echo $animal . "<br>"; // chat
+        echo foret() . "<br>"; // chien
+        echo $animal . "<br>"; // chat 
+        $animal = foret(); // Uniquement ici j'impacte la variable de mon espace global, qui prendra la valeur return par la fonction foret()
+        echo $animal . "<br>";
+
+        $pays = "France"; // Variable déclarée dans l'espace global
+
+        function affiche_pays()
+        {
+            global $pays; // Avec le mot clé global, il est possible de récupérer une variable dans l'espace global pour le ramener dans la fonction
+            $pays = "Espagne";
+        }
+
+        echo $pays; // France (je n'ai pas encore exécuté ma fonction)
+
+        affiche_pays(); // On exécute la fonction affiche_pays donc la variable globale $pays prends une nouvelle valeur, celle prévue dans la fonction (Espagne)
+
+        echo $pays; // Espagne
+
+        separateur();
+
+        // Il est possible de typer les arguments d'une fonction ainsi que son return 
+        function identite(string $nom, int $age = 35, int $cp = 00): string // Si en phase de dev, je ne retourne pas un string, alors cela m'indiquera une erreur
+        {
+            return "$nom a $age ans et habite dans le $cp<hr>";
+        }
+
+        echo identite("Pierra", 30, 30); // Si je transmet des types non attendus (malgré la flexibilité du langage) j'aurai un TypeError
+        echo identite(nom: "Lolo", cp:47); // Depuis PHP 8 On peut appeler les arguments par leur nom, ce qui me permet de fournir certains param facultatif sans forcément citer tous les autres avant ! (Si j'ai 10 param facultatif dans ma fonction et que je veux saisir le dernier uniquement, avant j'étais obligé de tous les saisir, maintenant plus besoin !)
+
+
+
 
 
 
