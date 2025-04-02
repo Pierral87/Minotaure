@@ -15,7 +15,10 @@
                             <a class="nav-link" href="<?= URL ?>inscription.php">Inscription</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= URL ?>connexion.php">Connexion</a>
+                            <a class="nav-link" href="connexion.php">Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= URL ?>admin/gestionAdmin.php">GestionAdmin</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" aria-disabled="true">Disabled</a>

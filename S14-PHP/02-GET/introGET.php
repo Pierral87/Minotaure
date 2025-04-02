@@ -2,6 +2,27 @@
 
 /* 
 
+Le protocole GET fait partie du protocole HTTP (la communication entre le navigateur client et le serveur web), utilisé pour récupérer des informations dans une URL. C'est l'une des méthodes les plus courantes pour intéragir avec une application/site web, principalement pour demander des ressources ou lancer des actions.
+
+On considèrera que GET se manifeste la plupart du temps sur une action "clic" 
+
+On comprend donc que grâce à GET, on récupère des informations diverses via un "lien" :
+    - clic sur une vignette produit, me transmet la référence produit, ce qui me permet d'afficher la bonne page produit
+    - clic sur un bouton supprimer d'une interface de gestion, pour supprimer un élément
+    - clic sur un tri d'affichage pour afficher par exemple les produits en prix croissant ou décroissant 
+
+Forme d'une url avec param GET : 
+http://www.monsiteeshop.com/ficheProduit.php?ref=9487165&couleur=bleu
+
+Ici dans l'URL ci dessus, on visualise le "?" qui nous indique la fin du chemin d'accès à une page spécifique, après le "?" se trouve les divers param que l'on pourra récupérer en php, c'est sous forme de clé/valeur, donc de tableau array, ici je transmet un param "ref" avec la valeur 9487165 et un param "couleur" avec la valeur "bleu", je peux transmettre autant de param que je le souhaite, dans la limite de la taille d'une URL
+
+Généralement on utilise GET pour des opérations NON sensibles, car c'est visible directement dans l'URL du navigateur (on ne l'utilisera jamais sur des form d'inscription/connexion par exemple, pour des form on préfère toujours utiliser POST)
+
+En PHP, l'outil associé à la récupération de GET est ce qu'on appelle une SUPERGLOBALE nommée $_GET, comme toutes les superglobales de PHP, $_GET est un tableau array ! 
+
+Dans l'exemple ci dessous de ma page template bootstrap, j'ai 3 liens définis dans le bouton dropdown "Catégorie" chacun me laisse sur cette même page mais transmet un param dans le get : 
+<a class="dropdown-item" href="?cat=info">Informatique</a>
+Ici je reste sur la même page mais je récupère le param "cat" qui a pour valeur "info", ce qui me permet de comprendre que l'utilisateur demande la catégorie Informatique, je peux ensuite lancer mon traitement en rapport avec cette demande 
 
 */
 
@@ -237,8 +258,11 @@
     <main class="flex-shrink-0">
         <div class="container">
             <h1 class="mt-5">Bienvenue sur mon site eshop</h1>
-            <p class="lead">Choisissez une catégorie de produit à afficher</p>
-            <?php var_dump($_GET); ?>
+            <?php 
+            var_dump($_GET); 
+            if (isset($_GET["cat"])) : ?> <h1>Liste des produits de la catégorie : <?= $_GET["cat"] ?></h1>
+            <?php else : ?> <h1>Choisissez une catégorie de produit à afficher</h1>
+            <?php endif; ?>
         </div>
     </main>
 

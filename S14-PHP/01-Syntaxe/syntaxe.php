@@ -582,7 +582,7 @@
         echo foret() . "<br>"; // chien
         echo $animal . "<br>"; // chat 
         $animal = foret(); // Uniquement ici j'impacte la variable de mon espace global, qui prendra la valeur return par la fonction foret()
-        echo $animal . "<br>";
+        echo $animal . "<br>"; // chien
 
         $pays = "France"; // Variable déclarée dans l'espace global
 
