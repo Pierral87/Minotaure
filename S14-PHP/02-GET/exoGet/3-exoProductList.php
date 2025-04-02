@@ -17,3 +17,46 @@ session_start();
 
 
 */
+
+
+if (!isset($_SESSION['produits'])) {
+    $_SESSION['produits'] = [
+        ["id" => 1, "nom" => "Produit A", "description" => "Description du produit A", "categorie" => "Électronique", "image" => "https://picsum.photos/200?random=1"],
+        ["id" => 2, "nom" => "Produit B", "description" => "Description du produit B", "categorie" => "Vêtements", "image" => "https://picsum.photos/200?random=2"],
+        ["id" => 3, "nom" => "Produit C", "description" => "Description du produit C", "categorie" => "Électronique", "image" => "https://picsum.photos/200?random=3"],
+    ];
+} 
+
+$categorie = $_GET["categorie"] ?? null;
+
+$produits_affiches = array_filter($_SESSION['produits'], function($produit) use ($categorie) {
+    return $categorie ? $produit['categorie'] == $categorie : true;
+});
+?>
+
+<body>
+
+    <h1>Bienvenue sur notre site e-commerce !</h1>
+
+    <h3>Filtrer par catégorie :</h3>
+    <ul>
+        <li><a href="3-exoProductList.php?categorie=Électronique">Électronique</a></li>
+        <li><a href="3-exoProductList.php?categorie=Vêtements">Vêtements</a></li>
+        <li><a href="3-exoProductList.php?categorie=Maison">Maison</a></li>
+        <li><a href="3-exoProductList.php">Tous les produits</a></li>
+    </ul>
+
+    <h2>Liste des produits</h2>
+    <div class="produits">
+        <?php foreach ($produits_affiches as $produit): ?>
+            <div class="produit">
+                <img src="<?= $produit['image'] ?>" alt="<?= $produit['nom'] ?>" style="width:200px;height:200px;">
+                <h3><?= $produit['nom'] ?></h3>
+                <p><?= $produit['description'] ?></p>
+                <p><strong>Catégorie:</strong> <?= $produit['categorie'] ?></p>
+                <a href="produit.php?id=<?= $produit['id'] ?>">Voir le produit</a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+</body>
