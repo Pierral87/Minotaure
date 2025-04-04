@@ -54,6 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $uploadMessage = "<div class='alert alert-danger'>Erreur lors de l'envoi du fichier.</div>";
             }
         } else {
+            // On pourrait gérer nos messages d'erreur dans la $_SESSION, tel des "flash messages"
+            // Sur certaines pages on lancera une boucle foreach pour afficher tous les messages insérés dans la session et on en fera tout de suite un "unset" pour les supprimer de la session, le but étant de ne les afficher qu'une seule fois
+            // Lors de certains traitement, on passera peut être par des pages intermédiaires, ce qui ne me permettra de récupérer le contenu de $uploadMessage, grâce aux sessions, on peut conserver des informations tout au long de notre navigation
+            $_SESSION["messages"][] = "<div class='alert alert-danger'>Désolé extensions non autorisée !</div>";
             $uploadMessage = "<div class='alert alert-danger'>Désolé extensions non autorisée !</div>";
         }
 
@@ -77,6 +81,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h1>Upload de fichier</h1>
 
                 <?= $uploadMessage ?>
+                <?php  
+                    foreach($_SESSION["messages"] as $message) {
+                        echo $message;
+                    }
+                    unset($_SESSION["messages"]);
+                ?>
 
                 <form action="" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
