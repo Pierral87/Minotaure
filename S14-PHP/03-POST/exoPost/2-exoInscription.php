@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "L'email n'est pas valide.";
     }
 
-    if (strlen($password) < 6) {
+    if (iconv_strlen($password) < 6) {
         $errors[] = "Le mot de passe doit faire au moins 6 caractères.";
     }
 
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Si pas d'erreurs, on enregistre l'utilisateur
     if (empty($errors)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_ARGON2ID);
         $_SESSION['users'][] = ['pseudo' => $pseudo, 'email' => $email, 'password' => $hashedPassword];
         $success = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
     }

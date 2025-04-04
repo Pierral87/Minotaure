@@ -18,3 +18,13 @@
                     - 10 Permettre de vider le panier entier 
 
 */ 
+
+session_start();
+
+// Produits disponibles
+$products = [
+    ['id' => 1, 'name' => 'Produit 1', 'price' => 19.99],
+    ['id' => 2, 'name' => 'Produit 2', 'price' => 24.99],
+    ['id' => 3, 'name' => 'Produit 3', 'price' => 15.99],
+    ['id' => 4, 'name' => 'Produit 4', 'price' => 29.99],
+];
