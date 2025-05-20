@@ -89,11 +89,159 @@ SELECT titre FROM livre WHERE id_livre IN
 -- Dans ce cas précis, je suis obligé d'utiliser IN car la sous requête me renvoie plus d'un résultat, un "=" ne fonctionnera pas 
 
 -- EXERCICE 1 : Quels sont les prénoms des abonnés n'ayant pas rendu un livre à la bibliotheque.
+
+-- En jointure (pour plus tard)
+-- SELECT DISTINCT a.prenom FROM abonne a
+-- JOIN emprunt e ON a.id_abonne = e.id_abonne 
+-- WHERE e.date_rendu IS NULL;
+SELECT prenom FROM abonne WHERE id_abonne IN 
+     (SELECT id_abonne FROM emprunt WHERE date_rendu IS NULL);
++--------+
+| prenom |
++--------+
+| Benoit |
+| Chloe  |
++--------+
+
 -- EXERCICE 2 : Nous aimerions connaitre le(s) n° des livres empruntés par Chloé
+SELECT id_livre FROM emprunt WHERE id_abonne = 
+    (SELECT id_abonne FROM abonne WHERE prenom = "Chloe");
++----------+
+| id_livre |
++----------+
+|      100 |
+|      105 |
++----------+
+
 -- EXERCICE 3 : Affichez les prénoms des abonnés ayant emprunté un livre le 07/12/2016.
+SELECT prenom FROM abonne WHERE id_abonne IN 
+    (SELECT id_abonne FROM emprunt WHERE date_sortie = "2016-12-07");
++-----------+
+| prenom    |
++-----------+
+| Guillaume |
+| Benoit    |
++-----------+
 -- EXERCICE 4 : combien de livre Guillaume a emprunté à la bibliotheque ?
+SELECT COUNT(*) FROM emprunt WHERE id_abonne = 
+    (SELECT id_abonne FROM abonne WHERE prenom = "Guillaume");
++----------+
+| COUNT(*) |
++----------+
+|        2 |
++----------+
 -- EXERCICE 5 : Affichez la liste des abonnés ayant déjà emprunté un livre d'Alphonse Daudet
+SELECT prenom FROM abonne WHERE id_abonne IN 
+    (SELECT id_abonne FROM emprunt WHERE id_livre IN 
+        (SELECT id_livre FROM livre WHERE auteur = "alphonse daudet"));
++--------+
+| prenom |
++--------+
+| Laura  |
++--------+
 -- EXERCICE 6 : Nous aimerions connaitre les titres des livres que Chloe a emprunté à la bibliotheque.
+SELECT titre FROM livre WHERE id_livre IN 
+    (SELECT id_livre FROM emprunt WHERE id_abonne = 
+        (SELECT id_abonne FROM abonne WHERE prenom = "Chloe"));
++-------------------------+
+| titre                   |
++-------------------------+
+| Une vie                 |
+| Les Trois Mousquetaires |
++-------------------------+
 -- EXERCICE 7 : Nous aimerions connaitre les titres des livres que Chloe n'a pas emprunté à la bibliotheque.
+SELECT titre FROM livre WHERE id_livre NOT IN 
+    (SELECT id_livre FROM emprunt WHERE id_abonne = 
+        (SELECT id_abonne FROM abonne WHERE prenom = "Chloe"));
++-----------------+
+| titre           |
++-----------------+
+| Bel-Ami         |
+| Le pere Goriot  |
+| Le Petit chose  |
+| La Reine Margot |
++-----------------+
 -- EXERCICE 8 : Nous aimerions connaitre les titres des livres que Chloe a emprunté à la bibliotheque ET qui n'ont pas été rendu.
+SELECT titre FROM livre WHERE id_livre IN 
+    (SELECT id_livre FROM emprunt WHERE date_rendu IS NULL AND id_abonne = 
+        (SELECT id_abonne FROM abonne WHERE prenom = "Chloe"));
+
 -- EXERCICE 9 : Qui a emprunté le plus de livre à la bibliotheque ?
+SELECT prenom FROM abonne WHERE id_abonne = 
+    (SELECT id_abonne FROM emprunt GROUP BY id_abonne ORDER BY COUNT(*) DESC LIMIT 1);
++--------+
+| prenom |
++--------+
+| Benoit |
++--------+
+
+-- Ici c'est l'affichage de chaque id abonné et de son nombre d'emprunts
+SELECT id_abonne, COUNT(*) as nombre_emprunt FROM emprunt GROUP BY id_abonne ORDER BY COUNT(*) DESC;
+
+-- Si jamais plusieurs abonnés avaient le même nombre d'emprunt et que l'on souhaite tous les afficher (et pas seulement 1 à cause du LIMIT 1)
+-- (On a rajouté un emprunt à l'abonné 1 pour faire le test)
+SELECT prenom FROM abonne WHERE id_abonne IN 
+    (SELECT id_abonne FROM emprunt GROUP BY id_abonne HAVING COUNT(*) = 
+        (SELECT MAX(nbr_emprunt) FROM (SELECT COUNT(*) AS nbr_emprunt FROM emprunt GROUP BY id_abonne) AS compte));
+        -- Ici il y a une création d'une table temporaire (sans la nommer) pour récupérer la valeur "nbr_emprunt" par id_abonne, on récupère la valeur MAX() de ce nombre d'emprunt qui nous permet de mener à bien nos autres requêtes (celles avec le HAVING COUNT(*) = MAX(nbr_emprunt))
+        -- Grâce à ce procédé on est capable de sortir plusieurs prenoms contrairement à la solution initiale
++-----------+
+| prenom    |
++-----------+
+| Guillaume |
+| Benoit    |
++-----------+
+
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+----------- REQUETES EN JOINTURE -------------------------------------------------------
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+
+-- Une jointure est toujours possible 
+-- Une imbriquée est possible uniquement si les champs que l'on récupère proviennent d'une seule table 
+
+-- Avec des requêtes imbriquées, on parcourt les tables les unes après les autres en transitant par le "champ commun"
+-- Avec des requêtes en jointure, on peut mélanger les champs de sorties, les appels de tables, les conditions sans que cela pose problème 
+
+-- Nous aimerions connaître les dates de sorties et les dates de rendu pour l'abonne Guillaume 
+-- En imbriquée, non faisable car Guillaume est une info présente sur la table abonne et les dates sont présentes sur la table emprunt, je ne peux pas les afficher simultanément
+
+-- Ci dessous abonne.prenom, j'utilise le prefixe de table abonne. pour faire comprendre au système que je parle du champ prénom de la table abonne, ce qui peut éviter des ambiguités
+SELECT abonne.prenom, emprunt.date_sortie, emprunt.date_rendu  -- Ce que je veux afficher, de plusieurs tables différentes
+FROM emprunt, abonne                                           -- Les tables dont j'ai besoin dans ma requêt 
+WHERE prenom = "Guillaume"                                     -- Une condition
+AND abonne.id_abonne = emprunt.id_abonne;                      -- La création de la jointure, je spécifie au système le champ commun entre les deux tables
+
+-- On peut indiquer des alias de table pour raccourci d'écriture pour les prefixes de tables 
+-- Ci dessous on défini un prefixe e pour emprunt et a pour abonne 
+SELECT a.prenom, e.date_sortie, e.date_rendu  
+FROM emprunt e, abonne a                                          
+WHERE prenom = "Guillaume"                                     
+AND a.id_abonne = e.id_abonne;   
+
+-- Autres syntaxes pour les jointures
+-- En utilisant INNER JOIN ou JOIN 
+-- Avec cette méthode on joint les tables une par une 
+
+-- INNER JOIN ou JOIN aucune différences, ce sont des jointures "interne"
+SELECT a.prenom, e.date_sortie, e.date_rendu  
+FROM abonne a 
+INNER JOIN emprunt e ON e.id_abonne = a.id_abonne  -- Ici la syntaxe ON  un_id = un_id_autretable est utilisée si jamais les champs communs ne sont pas nommés exactement de la même manière
+WHERE a.prenom = "Guillaume";
+
+SELECT a.prenom, e.date_sortie, e.date_rendu  
+FROM abonne a 
+INNER JOIN emprunt e USING (id_abonne) -- Dans notre base, les id pk et fk s'appellent exactement de la même manière, donc je peux utiliser USING plutôt que ON 
+WHERE a.prenom = "Guillaume";
+
+SELECT a.prenom, e.date_sortie, e.date_rendu  
+FROM abonne a 
+JOIN emprunt e USING (id_abonne)
+WHERE a.prenom = "Guillaume";
+
+-- EXERCICE 1 : Nous aimerions connaitre les dates de sortie et les dates de rendu pour les livres écrit par Alphonse Daudet
+-- EXERCICE 2 : Qui a emprunté le livre "une vie" sur l'année 2016 
+-- EXERCICE 3 : Nous aimerions connaitre le nombre de livre emprunté par chaque abonné 
+-- EXERCICE 4 : Nous aimerions connaitre le nombre de livre emprunté à rendre par chaque abonné
+-- EXERCICE 5 : Qui (prenom) a emprunté Quoi (titre) et Quand (date_sortie) ?
