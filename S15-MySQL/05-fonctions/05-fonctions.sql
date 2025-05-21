@@ -128,6 +128,36 @@ DELIMITER ;
 CALL selectAllEmployes();
 
 -- Exercice 1 : Faire une procédure qui prends en param le prenom d'un employé et qui affiche le service et le salaire de cet employé
--- Exercice 2 : Faire une procédure qui va modifier le salaire d'un employé, premier param le prenom de l'employé et second param le nouveau salaire
--- Exercice 3 : Retour sur la table bibliothèque, faire une procédure qui englobe la jointure d'affichage de tous les emprunts de la bdd, on veut un affichage prenom, titre, auteur, date_sortie, date_rendu
+DELIMITER $ 
+CREATE PROCEDURE infosEmploye(prenomEmploye VARCHAR(255)) 
+BEGIN 
+    SELECT service, salaire FROM employes WHERE prenom = prenomEmploye;
+END $ 
+DELIMITER ; 
 
+CALL infosEmploye("Jean-Pierre");
+
+-- Exercice 2 : Faire une procédure qui va modifier le salaire d'un employé, premier param le prenom de l'employé et second param le nouveau salaire
+DELIMITER $ 
+CREATE PROCEDURE updateSalaire(p_prenom VARCHAR(255), p_salaire INT)
+BEGIN 
+    UPDATE employes SET salaire = p_salaire WHERE prenom = p_prenom;
+END $ 
+DELIMITER ; 
+
+CALL updateSalaire("Jean-Pierre", 50000);
+
+-- Exercice 3 : Retour sur la table bibliothèque, faire une procédure qui englobe la jointure d'affichage de tous les emprunts de la bdd, on veut un affichage prenom, titre, auteur, date_sortie, date_rendu
+USE bibliotheque;
+DELIMITER $ 
+CREATE PROCEDURE afficherEmprunts()
+BEGIN 
+    SELECT a.prenom, l.titre, l.auteur, e.date_sortie, e.date_rendu 
+    FROM emprunt e 
+    JOIN abonne a ON e.id_abonne = a.id_abonne 
+    JOIN livre l ON e.id_livre = l.id_livre;
+END $
+DELIMITER ; 
+
+
+CALL afficherEmprunts();
