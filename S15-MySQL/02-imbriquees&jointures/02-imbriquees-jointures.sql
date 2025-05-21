@@ -370,5 +370,49 @@ ORDER BY prenom;
 +-----------+----------+
 
 -- EXERCICE 1 : Affichez tous les livres sans exception puis les id_abonne ayant emprunté ces livres si c'est le cas
+SELECT l.titre, l.id_livre, e.id_abonne 
+FROM livre l LEFT JOIN emprunt e USING (id_livre);
++-------------------------+----------+-----------+
+| titre                   | id_livre | id_abonne |
++-------------------------+----------+-----------+
+| Une vie                 |      100 |         1 |
+| Une vie                 |      100 |         2 |
+| Une vie                 |      100 |         3 |
+| Une vie                 |      100 |         1 |
+| Bel-Ami                 |      101 |         2 |
+| Le pere Goriot          |      102 |      NULL |
+| Le Petit chose          |      103 |         4 |
+| La Reine Margot         |      104 |         1 |
+| Les Trois Mousquetaires |      105 |         3 |
+| Les Trois Mousquetaires |      105 |         2 |
++-------------------------+----------+-----------+
 -- EXERCICE 2 : Affichez tous les prénoms des abonnés et s'ils ont fait des emprunts, affichez les id_livre, auteur et titre
+SELECT a.prenom, e.id_livre, l.titre, l.auteur 
+FROM abonne a 
+LEFT JOIN emprunt e ON a.id_abonne = e.id_abonne 
+LEFT JOIN livre l ON e.id_livre = l.id_livre;
+-- WHERE e.date_sortie IS NOT NULL;
 -- EXERCICE 3 : Affichez tous les prénoms des abonnés et s'ils ont fait des emprunts, affichez les id_livre, auteur et titre ainsi que les livres non empruntés :)
+SELECT a.prenom, e.id_livre, l.titre, l.auteur 
+FROM abonne a 
+LEFT JOIN emprunt e ON a.id_abonne = e.id_abonne 
+LEFT JOIN livre l ON e.id_livre = l.id_livre
+UNION 
+SELECT a.prenom, e.id_livre, l.titre, l.auteur 
+FROM livre l 
+LEFT JOIN emprunt e USING (id_livre)
+LEFT JOIN abonne a USING (id_abonne);
++-----------+----------+-------------------------+-------------------+
+| prenom    | id_livre | titre                   | auteur            |
++-----------+----------+-------------------------+-------------------+
+| Guillaume |      100 | Une vie                 | GUY DE MAUPASSANT |
+| Guillaume |      104 | La Reine Margot         | ALEXANDRE DUMAS   |
+| Benoit    |      100 | Une vie                 | GUY DE MAUPASSANT |
+| Benoit    |      105 | Les Trois Mousquetaires | ALEXANDRE DUMAS   |
+| Benoit    |      101 | Bel-Ami                 | GUY DE MAUPASSANT |
+| Chloe     |      105 | Les Trois Mousquetaires | ALEXANDRE DUMAS   |
+| Chloe     |      100 | Une vie                 | GUY DE MAUPASSANT |
+| Laura     |      103 | Le Petit chose          | ALPHONSE DAUDET   |
+| Pierral   |     NULL | NULL                    | NULL              |
+| NULL      |     NULL | Le pere Goriot          | HONORE DE BALZAC  |
++-----------+----------+-------------------------+-------------------+
