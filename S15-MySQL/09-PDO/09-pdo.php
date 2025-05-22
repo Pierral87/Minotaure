@@ -255,5 +255,49 @@ var_dump($data);
 echo "Premier employé de la BDD : " . $data[0]["prenom"]  . "<hr>";
 
 //  EXERCICE : Affichez les noms et prénoms des employés dans une liste ul li 
+
 // Le faire avec fetch 
+$stmt = $pdo->query("SELECT nom, prenom FROM employes");
+echo "<ul>";
+while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
+echo '<li>' . $ligne["nom"] . " " . $ligne["prenom"] . "</li>";
+}
+echo "</ul><hr><hr><hr>";
+
 // Le faire aussi avec fetchAll
+$stmt = $pdo->query("SELECT nom, prenom FROM employes");
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+echo "<ul>";
+foreach($data AS $ligne){
+echo '<li>' . $ligne["nom"] . " " . $ligne["prenom"] . "</li>";
+}
+echo "</ul>";
+
+echo "<h2>06 - Requêtes préparées pour se protéger des injections SQL !</h2>";
+
+// prepare() permet de sécuriser les requêtes pour éviter les injections SQL 
+// Si la requête contient des informations provenant de l'utilisateur (pour mener à bien cette requête) alors OBLIGATION de faire prepare (et surtout pas query)
+// Dans le doute, on préfèrera toujours utiliser prepare()
+
+$nom = "laborde"; // Information supposée récupérée d'un formulaire. On cherche un user dont le nom serait laborde
+
+// Première étape préparation de la requête 
+
+// Première syntaxe possible, avec des "?" remplaçant les valeurs attendues à réinsérer au niveau du execute
+// Cette syntaxe bien que rapide, manque de lisibilité
+$stmt = $pdo->prepare("SELECT * FROM employes WHERE nom = ?");
+$stmt->execute([$nom]); // On fourni dans les params du execute un array qui contient les valeurs à coller à la place de nos "?" (DANS L'ORDRE)
+$data = $stmt->fetch(PDO::FETCH_ASSOC);
+var_dump($data);
+
+// Sur des requêtes à nombreux param, cela complexifie la lisibilité
+// $stmt = $pdo->prepare("INSERT INTO employes (prenom, nom, sexe, service, salaire, date_embauche) VALUES (?,?,?,?,?,?)");
+// $stmt->execute([$prenom, $nom, $sexe, $service, $salaire, $dateEmbauche]);
+
+// On préfèrera utiliser la syntaxe avec les "tokens" "marqueurs nominatif"
+$stmt = $pdo->prepare("SELECT * FROM employes WHERE nom = :nom"); // On nomme les valeurs attendus par un mot précédé de ":"
+$stmt->bindParam(":nom", $nom, PDO::PARAM_STR); // Pour chaque marqueur nominatif, on executera la fonction bindParam avec le filtre qui correspond
+// En MySQL on pourra toujours envoyer nos valeurs en PARAM_STR (string), car MySQL est capable de refaire le tri des bons types à l'insertion dans la table
+$stmt->execute();
+$data = $stmt->fetch(PDO::FETCH_ASSOC);
+var_dump($data);
