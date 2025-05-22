@@ -76,19 +76,61 @@ INSERT INTO `vehicule` (`id_vehicule`, `marque`, `modele`, `couleur`, `immatricu
 
 -- 1 - Créer les clés étrangères et les relations, cela empêchera l'insertion de fausses valeurs 
 
+ALTER TABLE association_vehicule_conducteur
+ADD CONSTRAINT fk_asso_vehicule
+FOREIGN KEY (id_vehicule) REFERENCES vehicule(id_vehicule);
+
+ALTER TABLE association_vehicule_conducteur
+ADD CONSTRAINT fk_asso_conducteur
+FOREIGN KEY (id_conducteur) REFERENCES conducteur(id_conducteur);
+
 -- 2 - Définir les modes de contraintes en fonction des souhaits de notre client ci-dessous :
         -- 1 - La société de taxis peut modifier leurs conducteurs via leur logiciel, lorsqu'un conducteur est modifié, la société aimerait que la modification soit répercutée dans la table d'association   
+        sur la relation conducteur : ON UPDATE CASCADE
         -- 2 - La société de taxis peut supprimer des conducteurs via leur logiciel, ils aimeraient bloquer la possibilité de supprimer un conducteur tant que celui-ci conduit un véhicule.
+        sur la relation conducteur : ON DELETE RESTRICT
         -- 3 - La société de taxis peut modifier un véhicule via leur logiciel. Lorsqu'un véhicule est modifié, on veut que la modification soit répercutée dans la table d'association
+        sur la relation vehicule : ON UPDATE CASCADE
         -- 4 - Si un véhicule est supprimé alors qu'un ou plusieurs conducteurs le conduisaient, la société aimerait garder la trace de l'association dans la table d'association malgré tout.
+        sur la relation vehicule : ON DELETE SET NULL
+
 
 -- EXERCICES Requetes
 
 -- 01 - Qui conduit la voiture 503 ? 
+SELECT prenom 
+FROM conducteur c, association_vehicule_conducteur a
+WHERE id_vehicule = 503
+AND a.id_conducteur = c.id_conducteur;
 -- 02 - Quelle(s) voiture(s) est conduite par le conducteur 3 ? 
+SELECT id_conducteur, marque, modele 
+FROM association_vehicule_conducteur avc, vehicule v
+WHERE id_conducteur = 3
+AND avc.id_vehicule = v.id_vehicule;
 -- 03 - Qui conduit quoi ? 
+SELECT prenom, modele, marque 
+FROM conducteur c, vehicule v, association_vehicule_conducteur avc
+WHERE avc.id_vehicule = v.id_vehicule
+AND c.id_conducteur = avc.id_conducteur
+ORDER BY prenom;
 -- 04 - Ajoutez vous dans la liste des conducteurs.
         -- Afficher tous les conducteurs (meme ceux qui n'ont pas de correspondance avec les vehicules) puis les vehicules qu'ils conduisent si c'est le cas
+INSERT INTO conducteur (prenom, nom) VALUES ("Pierral", "Lacaze");
+SELECT prenom, modele, marque 
+FROM conducteur
+LEFT JOIN association_vehicule_conducteur USING (id_conducteur)
+LEFT JOIN vehicule USING (id_vehicule);
 -- 05 - Ajoutez un nouvel enregistrement dans la table des véhicules.
         -- Afficher tous les véhicules (meme ceux qui n'ont pas de correspondance avec les conducteurs) puis les conducteurs si c'est le cas
+SELECT marque, modele, prenom, nom 
+FROM vehicule
+LEFT JOIN association_vehicule_conducteur USING (id_vehicule)
+LEFT JOIN conducteur USING (id_conducteur);
 -- 06 - Afficher tous les conducteurs et tous les vehicules, peu importe les correspondances.
+SELECT marque, modele, prenom FROM conducteur c 
+LEFT JOIN association_vehicule_conducteur avc ON c.id_conducteur = avc.id_conducteur
+LEFT JOIN vehicule v ON v.id_vehicule = avc.id_vehicule
+UNION
+SELECT marque, modele, prenom FROM conducteur c 
+RIGHT JOIN association_vehicule_conducteur avc ON c.id_conducteur = avc.id_conducteur
+RIGHT JOIN vehicule v ON v.id_vehicule = avc.id_vehicule;
