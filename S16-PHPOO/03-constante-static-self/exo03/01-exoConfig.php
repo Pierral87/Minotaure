@@ -16,3 +16,35 @@ Objectif : Créer une classe Config pour gérer la configuration générale d'un
         Une méthode statique getAppName() qui retourne le nom de l'application.
 
 */
+
+class Config
+{
+    public const APP_NAME = 'MaSuperApplication';
+
+   
+    private static array $settings = [
+        'debug' => true,
+        'db_url' => 'https://urldemabdd.ovh',
+    ];
+
+    public static function setSetting(string $key, $value): void
+    {
+        self::$settings[$key] = $value;
+    }
+
+    
+    public static function getSetting(string $key)
+    {
+        return self::$settings[$key] ?? null;
+    }
+
+    
+    public static function getAppName(): string
+    {
+        return self::APP_NAME;
+    }
+}
+
+Config::setSetting("mode", "dev");
+
+echo Config::getSetting("mode");
