@@ -12,3 +12,32 @@ Objectif : Créer une classe de base CompteUtilisateur qui gère les information
     Crée une classe ComptePremium qui hérite de CompteUtilisateur et surcharge la méthode afficherInfos() pour ajouter "Compte Premium" dans les informations affichées.
 
     */
+
+class CompteUtilisateur {
+    protected $nom;
+    protected $email;
+
+    public function __construct($nom, $email) {
+        $this->nom = $nom;
+        $this->email = $email;
+    }
+
+    public function afficherInfos() {
+        echo "Nom : {$this->nom}<br>";
+        echo "Email : {$this->email}<br>";
+    }
+}
+
+class ComptePremium extends CompteUtilisateur {
+    public function afficherInfos() {
+        parent::afficherInfos();
+        echo "Type de compte : Compte Premium<br>";
+    }
+}
+
+$user = new CompteUtilisateur("Pierro", "lolo@mail.com");
+
+$user->afficherInfos();
+
+$premium = new ComptePremium("Alex", "lex@mail.com");
+$premium->afficherInfos();
