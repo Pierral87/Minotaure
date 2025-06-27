@@ -1,0 +1,116 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #2E3244;
+    color: #C5C6C6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #FFFFFF;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2E3244;
+}
+
+.success-message {
+    color: #516079;
+    font-size: 1.1rem;
+}
+
+.link {
+    color: #F1895C;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.error-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    border-left: 3px solid #F1895C;
+    padding-left: 1rem;
+}
+
+.error-item {
+    color: #F1895C;
+    font-size: 0.95rem;
+    text-align: left;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    text-align: left;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #2E3244;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 0;
+    border: 2px solid #C5C6C6;
+    background: #F8F8F8;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #F1895C;
+    box-shadow: 0 0 8px rgba(241, 137, 92, 0.5);
+    outline: none;
+}
+
+.form-button {
+    padding: 0.9rem;
+    background: #F1895C;
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.form-button:hover {
+    background: #E17A50;
+    transform: scale(1.05);
+}
+
+.form-button:active {
+    transform: scale(0.98);
+}

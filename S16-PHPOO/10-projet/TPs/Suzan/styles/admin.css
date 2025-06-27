@@ -1,0 +1,84 @@
+.admin-container {
+    background-color: transparent; 
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: none; 
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 1rem;
+    text-align: left;
+}
+
+.user-table th, 
+.user-table td {
+    padding: 0.75rem;
+    border: 1px solid #C5C6C6;
+}
+
+.user-table th {
+    background-color: #2E3244;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.user-table tr:nth-child(even) {
+    background-color: #F8F8F8;
+}
+
+.user-table tr:hover {
+    background-color: #F1895C;
+    color: #FFFFFF;
+}
+
+.edit-link {
+    color: #516079;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.delete-link {
+    color: #FF4C4C;
+    text-decoration: none;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+}
+
+.delete-link:hover {
+    cursor: pointer;
+}
+
+.return-link {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: #F1895C;
+    transition: color 0.3s ease;
+}
+
+.return-link:hover {
+    text-decoration: underline;
+    color: #E17A50;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #2E3244;
+    color: #C5C6C6;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
